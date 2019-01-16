@@ -1,11 +1,17 @@
+
+// Output
 int redPin = 3;   // Red LED,   connected to digital pin 9
 int grnPin = 5;  // Green LED, connected to digital pin 10
 int bluPin = 6;  // Blue LED,  connected to digital pin 11
 
+// Color arrays
 int black[3]  = { 0, 0, 0 };
+int white[3]  = { 100, 100, 100 };
 int red[3]    = { 100, 0, 0 };
 int green[3]  = { 0, 100, 0 };
 int blue[3]   = { 0, 0, 100 };
+int yellow[3] = { 40, 95, 0 };
+int dimWhite[3] = { 30, 30, 30 };
 // etc.
 
 // Set initial color
@@ -13,9 +19,9 @@ int redVal = black[0];
 int grnVal = black[1]; 
 int bluVal = black[2];
 
-int wait = 0.1;      // 10ms internal crossFade delay; increase for slower fades
+int wait = 200;      // 10µs internal crossFade delay; increase for slower fades
 int hold = 1;       // Optional hold when a color is complete, before the next crossFade
-int DEBUG = 1;      // DEBUG counter; if set to 1, will write values back via serial
+int DEBUG = 0;      // DEBUG counter; if set to 1, will write values back via serial
 int loopCount = 60; // How often should DEBUG report?
 int repeat = 0;     // How many times should we loop before stopping? (0 for no stop)
 int j = 0;          // Loop counter for repeat
@@ -31,7 +37,7 @@ void setup()
   pinMode(redPin, OUTPUT);   // sets the pins as output
   pinMode(grnPin, OUTPUT);   
   pinMode(bluPin, OUTPUT); 
-  pinMode(A1, INPUT); 
+  pinMode(A1, INPUT);
   if (DEBUG) {           // If we want to see values for debugging...
     Serial.begin(9600);  // ...set up the serial ouput 
   }
@@ -150,7 +156,7 @@ void crossFade(int color[3]) {
     analogWrite(grnPin, grnVal);      
     analogWrite(bluPin, bluVal); 
 
-    delay(wait); // Pause for 'wait' milliseconds before resuming the loop
+    delayMicroseconds(wait); // Pause for 'wait' milliseconds before resuming the loop
 
     if (DEBUG) { // If we want serial output, print it at the 
       if (i == 0 or i % loopCount == 0) { // beginning, and every loopCount times
@@ -172,3 +178,5 @@ void crossFade(int color[3]) {
   prevB = bluVal;
   delay(hold); // Pause for optional 'wait' milliseconds before resuming the loop
 }
+
+
