@@ -1,11 +1,9 @@
-
-
 // Output
 int redPin = 3;   // Red LED,   connected to digital pin 3
 int grnPin = 5;  // Green LED, connected to digital pin 5
 int bluPin = 6;  // Blue LED,  connected to digital pin 6
 int photor = A1; // Photo résistance, connected to analog pin A1
-int buttonmode = 4;   // Button for changing mode,   connected to digital pin 4
+int buttonmode = 11;   // Button for changing mode,   connected to digital pin 4
 
 // Color arrays
 
@@ -27,7 +25,7 @@ int wait = 100;      // 10µs internal crossFade delay; increase for slower fade
 int hold = 1;       // Optional hold when a color is complete, before the next crossFade
 int repeat = 0;     // How many times should we loop before stopping? (0 for no stop)
 int j = 0;          // Loop counter for repeat
-
+int mode = 1;       // actual mode ( 1 = LightMode, 2 = animation, 3 = audio, 4 = manualMode ).
 // Initialize color variables
 int prevR = redVal;
 int prevG = grnVal;
@@ -46,7 +44,29 @@ void setup()
 // Main program: list the order of crossfades
 void loop()
 {
- 
+  int bmode = digitalRead(buttonmode);
+  if(bmode == HIGH)
+  {
+    while( bmode == HIGH){}
+    mode = mode++;
+  }
+  
+  switch (mode) {
+  case 1:
+      LightMode();
+    break;
+  case 2:
+     // Animation
+    break;
+  default:
+      LightMode();
+    break;
+}
+}
+
+
+void LightMode() 
+{
   int val = analogRead(A1);
   if(val <= 600)
   {
@@ -69,34 +89,12 @@ void loop()
   }
 }
 
-/* BELOW THIS LINE IS THE MATH -- YOU SHOULDN'T NEED TO CHANGE THIS FOR THE BASICS
-* 
-* The program works like this:
-* Imagine a crossfade that moves the red LED from 0-10, 
-*   the green from 0-5, and the blue from 10 to 7, in
-*   ten steps.
-*   We'd want to count the 10 steps and increase or 
-*   decrease color values in evenly stepped increments.
-*   Imagine a + indicates raising a value by 1, and a -
-*   equals lowering it. Our 10 step fade would look like:
-* 
-*   1 2 3 4 5 6 7 8 9 10
-* R + + + + + + + + + +
-* G   +   +   +   +   +
-* B     -     -     -
-* 
-* The red rises from 0 to 10 in ten steps, the green from 
-* 0-5 in 5 steps, and the blue falls from 10 to 7 in three steps.
-* 
-* In the real program, the color percentages are converted to 
-* 0-255 values, and there are 1020 steps (255*4).
-* 
-* To figure out how big a step there should be between one up- or
-* down-tick of one of the LED values, we call calculateStep(), 
-* which calculates the absolute gap between the start and end values, 
-* and then divides that gap by 1020 to determine the size of the step  
-* between adjustments in the value.
-*/
+
+
+/* 
+ DON'T TOUCH ANYTHING BELOW THIS LINE, COLORCROSSFADE FOR SMOOTH COLOR CHANGING
+ ------------------------------------------------------------------------------------------
+ */
 
 int calculateStep(int prevValue, int endValue) {
   int step = endValue - prevValue; // What's the overall gap?
@@ -105,12 +103,6 @@ int calculateStep(int prevValue, int endValue) {
   } 
   return step;
 }
-
-/* The next function is calculateVal. When the loop value, i,
-*  reaches the step size appropriate for one of the
-*  colors, it increases or decreases the value of that color by 1. 
-*  (R, G, and B are each calculated separately.)
-*/
 
 int calculateVal(int step, int val, int i) {
 
@@ -131,12 +123,6 @@ int calculateVal(int step, int val, int i) {
   }
   return val;
 }
-
-/* crossFade() converts the percentage colors to a 
-*  0-255 range, then loops 1020 times, checking to see if  
-*  the value needs to be updated each time, then writing
-*  the color values to the correct pins.
-*/
 
 void crossFade(int color[3]) {
   // Convert to 0-255
