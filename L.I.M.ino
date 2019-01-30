@@ -3,7 +3,6 @@ int redPin = 3;   // Red LED,   connected to digital pin 3
 int grnPin = 5;  // Green LED, connected to digital pin 5
 int bluPin = 6;  // Blue LED,  connected to digital pin 6
 int photor = A1; // Photo résistance, connected to analog pin A1
-int buttonmode = 11;   // Button for changing mode,   connected to digital pin 4
 
 // Color arrays
 
@@ -38,7 +37,7 @@ void setup()
   pinMode(grnPin, OUTPUT);   
   pinMode(bluPin, OUTPUT); 
   pinMode(photor, INPUT);
-  pinMode(buttonmode, INPUT);
+  Serial.begin(9600);
 }
 
 // Main program: list the order of crossfades
@@ -50,20 +49,21 @@ void loop()
     while( bmode == HIGH){}
     mode = mode++;
   }
-  
-  switch (mode) {
-  case 1:
-      LightMode();
-    break;
-  case 2:
-     // Animation
-    break;
-  default:
-      LightMode();
-    break;
-}
 }
 
+void serialEvent(){
+    if(Serial.available()>0){
+       var = Serial.read();
+       switch (var) {
+          case label1:
+          break;
+          case label2:
+          break;
+          default:
+          break;
+        }
+    }
+}
 
 void LightMode() 
 {
