@@ -52,17 +52,64 @@ void loop()
 }
 
 void serialEvent(){
-    if(Serial.available()>0){
-       var = Serial.read();
-       switch (var) {
-          case label1:
-          break;
-          case label2:
-          break;
-          default:
-          break;
-        }
+    while (Serial.available()) {
+    char var = (char)Serial.read();
+    inputString += var;
+    if (var == '\n') {
+      stringComplete = true;
     }
+  }
+}
+
+void notif()
+{
+  switch (app) {
+    case 1:
+      for(int k; k >= 10; k++)
+      {
+        crossFade(yellow);
+        delay(900);
+        crossFade(white);
+         delay(900);
+      }
+    break;
+    case 2:
+      for(int k; k >= 10; k++)
+      {
+        crossFade(blue);
+        delay(900);
+        crossFade(white);
+        delay(900);
+      }
+    break;
+    case 3:
+      for(int k; k >= 10; k++)
+      {
+        crossFade(lblue);
+        delay(900);
+        crossFade(white);
+        delay(900);
+      }
+    break;
+    case 4:
+      for(int k; k >= 10; k++)
+      {
+        crossFade(green);
+        delay(900);
+        crossFade(white);
+        delay(900);
+      }
+    break;
+    case 5:
+      for(int k; k >= 10; k++)
+      {
+        crossFade(insta);
+        delay(900);
+        crossFade(white);
+        delay(900);
+      }
+    break;
+  }
 }
 
 void LightMode() 
