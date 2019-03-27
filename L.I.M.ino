@@ -1,6 +1,6 @@
-ut// Output
-int redPin = 10;   // Red LED,   connected to digital pin 3
-int grnPin = 9;  // Green LED, connected to digital pin 5
+// Output
+int redPin = 9;   // Red LED,   connected to digital pin 3
+int grnPin = 10;  // Green LED, connected to digital pin 5
 int bluPin = 11;  // Blue LED,  connected to digital pin 6
 int photor = A1; // Photo résistance, connected to analog pin A1
 
@@ -10,10 +10,21 @@ int black[3]  = { 0, 0, 0 };
 int white[3]  = { 100, 100, 100 };
 int red[3]    = { 100, 0, 0 };
 int green[3]  = { 0, 100, 0 };
+int purple[3]  = { 0, 100, 0 };
+int lgreen[3]  = { 0, 100, 0 };
 int blue[3]   = { 0, 0, 100 };
 int lblue[3]   = { 0, 80, 100 };
 int yellow[3] = { 100, 100, 0 };
 int dimWhite[3] = { 30, 30, 30 };
+
+//Color arrays for notifications
+
+int insta[3]  = { 0, 100, 0 };
+int facebook[3]  = { 0, 0, 100 };
+int twitter[3]  = { 0, 80, 100 };
+int sms[3]  = { 0, 100, 0 };
+int snap[3]  = { 100, 100, 0 };
+
 
 int redVal = black[0];
 int grnVal = black[1]; 
@@ -40,7 +51,7 @@ void serialEvent()
     Serial.println(millis());
     Serial.println(r);
      switch(r){
-      case 's':
+      case 'n':
         mode = 4;
       break;
       case 'f':
@@ -49,8 +60,11 @@ void serialEvent()
       case 't':
         mode = 6;
       break;
-      case 'm':
+      case 's':
         mode = 7;
+      break;
+      case 'i':
+        mode = 8;
       break;
     }
     Serial.end();  
@@ -79,14 +93,16 @@ void loop()
       crossFade(blue);
       crossFade(lblue);
       crossFade(green);
+      crossFade(lgreen);
       crossFade(yellow);
+      crossFade(purple);
       crossFade(red);
       crossFade(white);
     break;
     case 4:
       for(int k; k <= 2; k++)
       {
-        crossFade(yellow);
+        crossFade(snap);
         delay(900);
         crossFade(black);
         delay(900);
@@ -95,7 +111,7 @@ void loop()
     case 5:
       for(int k; k <= 2; k++)
       {
-        crossFade(blue);
+        crossFade(facebook);
         delay(900);
         crossFade(black);
         delay(900);
@@ -104,7 +120,7 @@ void loop()
     case 6:
       for(int k; k <= 2; k++)
       {
-        crossFade(lblue);
+        crossFade(twitter);
         delay(900);
         crossFade(black);
         delay(900);
@@ -113,7 +129,7 @@ void loop()
     case 7:
       for(int k; k <= 2; k++)
       {
-        crossFade(green);
+        crossFade(sms);
         delay(900);
         crossFade(black);
         delay(900);
@@ -122,9 +138,9 @@ void loop()
     case 8:
       for(int k; k <= 2; k++)
       {
-      //  crossFade(insta);
+        crossFade(insta);
         delay(900);
-        crossFade(white);
+        crossFade(black);
         delay(900);
       }
     break;
@@ -218,7 +234,5 @@ void crossFade(int color[3]) {
   prevB = bluVal;
   delay(hold); // Pause for optional 'wait' milliseconds before resuming the loop
 }
-
-
 
 
