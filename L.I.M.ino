@@ -1,3 +1,4 @@
+// Code made by Edouard 
 // Output
 int redPin = 9;   // Red LED,   connected to digital pin 3
 int grnPin = 10;  // Green LED, connected to digital pin 5
@@ -35,14 +36,14 @@ int hold = 1;       // Optional hold when a color is complete, before the next c
 int repeat = 0;     // How many times should we loop before stopping? (0 for no stop)
 int j = 0;          // Loop counter for repeat
 
+int mode = 2;       // mode var for knowing actual mode ( 1 = Black, 2 = animation, 3 = audio, 4 = Snap, 5 = Facebook, 6 = Twitter, 7 = SMS, 8 = Instagram, 10 = LightMode  )
 
-int mode = 2;       // actual mode ( 1 = LightMode, 2 = animation, 3 = audio, 4 = Snap, 5  ).
 // Initialize color variables
 int prevR = redVal;
 int prevG = grnVal;
 int prevB = bluVal;
 
-void serialEvent() 
+void serialEvent() // If data is available from Serial port
 {
   char r;
   while(Serial.available()) 
@@ -51,6 +52,9 @@ void serialEvent()
     Serial.println(millis());
     Serial.println(r);
      switch(r){
+      case 'b':
+        mode = 1;
+      break;
       case 'n':
         mode = 4;
       break;
@@ -73,7 +77,6 @@ void serialEvent()
 }
 
 
-// Set up the LED outputs
 void setup()
 {
   pinMode(redPin, OUTPUT);
@@ -83,12 +86,19 @@ void setup()
   Serial.begin(9600);
 }
 
-// Main program: list the order of crossfades
 void loop()
 {
   switch (mode) {
     wait = 100;
-    case 2:
+    case 1: // Black / Turn off
+      while( !Serial.available )
+      {
+        digitalWrite(redPin, LOW);
+        digitalWrite(greenPin, LOW);
+        digitalWrite(bluePin, LOW);
+      }
+    break;
+    case 2: // Colorful animation
       wait = 1000;
       crossFade(blue);
       crossFade(lblue);
@@ -99,7 +109,7 @@ void loop()
       crossFade(red);
       crossFade(white);
     break;
-    case 4:
+    case 4: // Snapchat notification
       for(int k; k <= 2; k++)
       {
         crossFade(snap);
@@ -108,7 +118,7 @@ void loop()
         delay(900);
       }
     break;
-    case 5:
+    case 5: // Facebook notification
       for(int k; k <= 2; k++)
       {
         crossFade(facebook);
@@ -117,7 +127,7 @@ void loop()
         delay(900);
       }
     break;
-    case 6:
+    case 6: // Twitter notification
       for(int k; k <= 2; k++)
       {
         crossFade(twitter);
@@ -126,7 +136,7 @@ void loop()
         delay(900);
       }
     break;
-    case 7:
+    case 7: // SMS notification 
       for(int k; k <= 2; k++)
       {
         crossFade(sms);
@@ -135,7 +145,7 @@ void loop()
         delay(900);
       }
     break;
-    case 8:
+    case 8: // Instagram notification
       for(int k; k <= 2; k++)
       {
         crossFade(insta);
@@ -145,9 +155,10 @@ void loop()
       }
     break;
   }
-  mode = 2;
+  mode = 2; // Set mode to Colorful animation by default
 }
 
+// LightMode, color change from photoresistor, or a simple AnalogRead
 void LightMode() 
 {
   int val = analogRead(A1);
@@ -217,7 +228,7 @@ void crossFade(int color[3]) {
   int stepG = calculateStep(prevG, G); 
   int stepB = calculateStep(prevB, B);
 
-  for (int i = 0; i <= 1020 && !Serial.available(); i++) {
+  for (int i = 0; i <= 1020 && !Serial.available(); i++) { // Serial available for non blocking function, exit this loop if a Serial data is available
     redVal = calculateVal(stepR, redVal, i);
     grnVal = calculateVal(stepG, grnVal, i);
     bluVal = calculateVal(stepB, bluVal, i);
