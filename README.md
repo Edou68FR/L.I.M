@@ -5,5 +5,5 @@ Résistance 10KOhm pour photorésistance
 
 Base support bois : 7cm x 40cm x 5.5cm
 
-##Schéma extrêmement qualitatif
+## Schéma extrêmement qualitatif
 ![alt text](https://i.ibb.co/L0T03Dw/Capture.jpg)
