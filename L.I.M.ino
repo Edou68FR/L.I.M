@@ -1,9 +1,9 @@
 // Code made by Edouard 
 // Output
-int redPin = 9;   // Red LED,   connected to digital pin 3
+int redPin = 11;   // Red LED,   connected to digital pin 3
 int grnPin = 10;  // Green LED, connected to digital pin 5
-int bluPin = 11;  // Blue LED,  connected to digital pin 6
-int photor = A1; // Photo résistance, connected to analog pin A1
+int bluPin = 9;  // Blue LED,  connected to digital pin 6
+int photor = A0; // Photo résistance, connected to analog pin A1
 
 // Color arrays
 
@@ -11,7 +11,7 @@ int black[3]  = { 0, 0, 0 };
 int white[3]  = { 100, 100, 100 };
 int red[3]    = { 100, 0, 0 };
 int green[3]  = { 0, 100, 0 };
-int purple[3]  = { 0, 100, 0 };
+int purple[3]  = { 40, 0, 100 };
 int lgreen[3]  = { 0, 100, 0 };
 int blue[3]   = { 0, 0, 100 };
 int lblue[3]   = { 0, 80, 100 };
@@ -36,7 +36,7 @@ int hold = 1;       // Optional hold when a color is complete, before the next c
 int repeat = 0;     // How many times should we loop before stopping? (0 for no stop)
 int j = 0;          // Loop counter for repeat
 
-int mode = 2;       // mode var for knowing actual mode ( 1 = Black, 2 = animation, 3 = audio, 4 = Snap, 5 = Facebook, 6 = Twitter, 7 = SMS, 8 = Instagram, 10 = LightMode  )
+int mode = 2;       // mode var for knowing actual mode ( 1 = Black, 2 = animation, 4 = Snap, 5 = Facebook, 6 = Twitter, 7 = SMS, 8 = Instagram, 9 = LightMode  )
 
 // Initialize color variables
 int prevR = redVal;
@@ -55,6 +55,9 @@ void serialEvent() // If data is available from Serial port
       case 'b':
         mode = 1;
       break;
+      case 'a':
+        mode = 2;
+      break;
       case 'n':
         mode = 4;
       break;
@@ -69,6 +72,9 @@ void serialEvent() // If data is available from Serial port
       break;
       case 'i':
         mode = 8;
+      break;
+      case 'l':
+        mode = 9;
       break;
     }
     Serial.end();  
@@ -91,15 +97,15 @@ void loop()
   switch (mode) {
     wait = 100;
     case 1: // Black / Turn off
-      while( !Serial.available )
+      while( !Serial.available() )
       {
         digitalWrite(redPin, LOW);
-        digitalWrite(greenPin, LOW);
-        digitalWrite(bluePin, LOW);
+        digitalWrite(grnPin, LOW);
+        digitalWrite(bluPin, LOW);
       }
     break;
     case 2: // Colorful animation
-      wait = 1000;
+      wait = 2000;
       crossFade(blue);
       crossFade(lblue);
       crossFade(green);
@@ -152,6 +158,24 @@ void loop()
         delay(900);
         crossFade(black);
         delay(900);
+      }
+    break;
+    case 9:
+      while( !Serial.available() )
+      {
+        if(analogRead(A0) < 50)
+        {
+          crossFade(red);
+        }
+        else if(analogRead(A0) > 50 && analogRead(A0) < 120 )
+        {
+          crossFade(purple);
+        }
+        else if(analogRead(A0) > 120)
+        {
+          crossFade(white);
+        }
+        delay(50);
       }
     break;
   }
@@ -245,5 +269,6 @@ void crossFade(int color[3]) {
   prevB = bluVal;
   delay(hold); // Pause for optional 'wait' milliseconds before resuming the loop
 }
+
 
 
